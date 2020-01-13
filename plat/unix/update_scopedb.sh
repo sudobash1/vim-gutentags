@@ -67,13 +67,13 @@ CleanUp() {
 
 trap CleanUp INT QUIT TERM EXIT
 
-PREVIOUS_DIR=$(pwd)
+PREVIOUS_DIR=$(pwd -P)
 if [ -d "$PROJECT_ROOT" ]; then
     cd "$PROJECT_ROOT"
 fi
 
 if [ -n "${FILE_LIST_CMD}" ]; then
-    if [ "${PROJECT_ROOT}" = "." ]; then
+    if [ "$(pwd -P)" = "$PREVIOUS_DIR" ]; then
         eval "$FILE_LIST_CMD" | while read -r l; do
             echo "\"${l}\""
         done > "${DB_FILE}.files"
@@ -84,7 +84,7 @@ if [ -n "${FILE_LIST_CMD}" ]; then
         done > "${DB_FILE}.files"
     fi
 else
-    find . -type f ! -name ${DB_FILE} | while read -r l; do
+    find . -type f ! -name "${DB_FILE}" | while read -r l; do
         echo "\"${l}\""
     done > "${DB_FILE}.files"
 fi
